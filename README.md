@@ -1,99 +1,77 @@
-DevOps Architecture – Challenge REF: IT-AR
-Autor: Jefferson Muniz de Moura
-Cargo Alvo: DevOps Engineer / SRE
-Data: 08/04/2025
-Tech Stack (Revisada e Estratégica)
-Distribuição e Deploy do Executável
-Principal: Docker (empacotamento em imagem leve, compatível com qualquer runtime containerizado)
 
+# DevOps Architecture – Challenge REF: IT-AR
 
-Alternativas: Podman, Buildah, Bazel, Nix (para build hermético), ou distribuição via artefatos binários (Releases GitHub, S3, etc)
-Orquestração e Execução em Produção
-Principal: Kubernetes em AWS (EKS) como padrão corporativo
+![DevOps Architecture Diagram](devops-architecture-diagram.png)
 
+## Descrição
 
-Alternativas: GKE (Google), AKS (Azure), Nomad, ECS (Fargate), K3s (edge), K0s
-Pipeline CI/CD
-Principal: GitHub Actions (nativo, robusto, ideal para GitHub-hosted)
+Proposta técnica de arquitetura para um microserviço Go em ambiente bancário, com requisitos de alta disponibilidade, escalabilidade automática, rastreabilidade, observabilidade e ambiente Kubernetes em produção (EKS).
 
+---
 
-Alternativas: GitLab CI/CD, Jenkins (autogerenciado), CircleCI, Argo Workflows, Tekton, Harness, Azure DevOps Pipelines
-Registro de Artefatos e Imagens
-Principal: Amazon ECR (integração nativa com AWS e EKS)
+## Tech Stack
 
+### Distribuição e Deploy do Executável
+- Principal: Docker  
+- Alternativas: Podman, Buildah, Bazel, Nix, GitHub Releases, S3
 
-Alternativas: GitHub Container Registry, Harbor (on-prem e compliance), Docker Hub (dev), GCR (Google), Quay
-Escalonamento durante Picos de Tráfego
-Principal: HPA (Horizontal Pod Autoscaler) do Kubernetes com métricas nativas (CPU/RAM, custom metrics)
-Alternativas: KEDA (event-driven scaling), Cluster Autoscaler, VPA (Vertical Pod Autoscaler), escalabilidade via Redis Queue, Kafka ou Pub/Sub
+### Orquestração
+- Principal: Kubernetes (EKS – AWS)  
+- Alternativas: GKE, AKS, Nomad, ECS, K3s, K0s
 
+### Pipeline CI/CD
+- Principal: GitHub Actions  
+- Alternativas: GitLab CI/CD, Jenkins, CircleCI, Argo Workflows, Tekton, Azure DevOps
 
-Ingress & Balanceamento de Carga
-Principal: Ingress Controller com NGINX (equilibrado entre robustez e simplicidade)
+### Registro de Artefatos
+- Principal: Amazon ECR  
+- Alternativas: GHCR, Harbor, Docker Hub, GCR, Quay
 
+### Escalonamento
+- Principal: HPA (Horizontal Pod Autoscaler)  
+- Alternativas: KEDA, Cluster Autoscaler, VPA, Redis Queue, Kafka
 
-Alternativas: Istio Gateway, AWS ALB Ingress Controller, Traefik, Envoy, Kong
+### Ingress e Balanceamento
+- Principal: NGINX  
+- Alternativas: Istio, ALB Ingress, Traefik, Envoy, Kong
 
+### Fila / Buffer
+- Principal: Kafka  
+- Alternativas: SQS, Pub/Sub, RabbitMQ, NATS, Redis Streams
 
-Fila / Buffer para Alta Carga
-Principal: Kafka (distribuído, resiliente e ideal para sistemas críticos)
+### CDN
+- Principal: Cloudflare  
+- Alternativas: Fastly, CloudFront, Akamai, Netlify Edge, Bunny.net
 
+### Alta Disponibilidade
+- Principal: Multi-Zone com readiness/liveness probes  
+- Alternativas: Istio, DNS failover, PostgreSQL Patroni, Redis Sentinel, ALB/NLB, Envoy
 
-Alternativas: AWS SQS, GCP Pub/Sub, RabbitMQ, NATS Streaming, Redis Streams
+### Monitoramento
+- Principal: Prometheus + Grafana  
+- Alternativas: Datadog, New Relic, CloudWatch, Zabbix, VictoriaMetrics, InfluxDB
 
+### Logs
+- Principal: Loki  
+- Alternativas: ELK, Fluent Bit, Graylog, Splunk, Sumo Logic
 
-CDN e Distribuição de Conteúdo
-Principal: Cloudflare (segurança, cache, proteção DDoS)
+### Alertas
+- Principal: Alertmanager + PagerDuty  
+- Alternativas: Opsgenie, VictorOps, Webhook, New Relic, Zabbix
 
+### Dev/Test Local
+- Principal: Kind  
+- Alternativas: Minikube, Tilt, Skaffold, Telepresence, Garden, Docker Compose
 
-Alternativas: Fastly, AWS CloudFront, Akamai, Netlify Edge, Bunny.net
+### Testes de Performance
+- Principal: k6  
+- Alternativas: Locust, Gatling, Artillery, JMeter, Vegeta
 
+---
 
-Alta Disponibilidade
-Principal: Multi-Zone Kubernetes com readiness/liveness probes e réplicas ativas
+## Diagrama de Arquitetura
 
-
-Alternativas e complementares: Service Mesh com Istio, DNS failover, Database cluster ativo-ativo (PostgreSQL com Patroni, Redis Sentinel), Load Balancer HA (ALB/NLB, Envoy)
-
-
-Monitoramento e Métricas
-Principal: Prometheus + Grafana (padrão de mercado, extensível)
-
-
-Alternativas: Datadog, New Relic, CloudWatch, Zabbix, Victoria Metrics, InfluxDB + Chronograf
-
-
-Logs Centralizados
-Principal: Loki (leve, integrável com Grafana e Prometheus)
-
-
-Alternativas: ELK (ElasticSearch + Logstash + Kibana), Fluent Bit, Graylog, Splunk, Sumo Logic
-
-
-Alertas e Incidentes
-Principal: Alertmanager + integração com PagerDuty
-
-
-Alternativas: Opsgenie, VictorOps, Prometheus Alert Webhook, New Relic Alerts, Zabbix, Discord/Slack Webhook com bot
-
-
-Ambiente de Desenvolvimento e Testes
-Principal: Kind (Kubernetes in Docker, simula ambiente real localmente)
-
-
-Alternativas: Minikube, Tilt, Skaffold, Telepresence, Garden, Docker Compose (para stack leve)
-
-
-Testes de Performance e Carga
-Principal: k6 (moderno, leve, script em JS)
-
-
-Alternativas: Locust, Gatling, Artillery, JMeter, Vegeta
-
-
-
-Diagrama de Arquitetura (Alto Nível)
-
+```
 [Client / Frontend]
         |
     [API Gateway]
@@ -107,10 +85,13 @@ Diagrama de Arquitetura (Alto Nível)
  [Audit Service]   [Legacy Adapter]
         |
     [Prometheus, Grafana, Loki]
+```
 
-DevOps flow
-Pipeline CI/CD
+---
 
+## Pipeline CI/CD
+
+```
 [Commit] 
    ↓
 [Code Quality Scan] → [Unit Tests] 
@@ -130,34 +111,33 @@ Pipeline CI/CD
 [Manual Approval (if needed)] 
    ↓
 [Deploy to Prod]
+```
 
+---
 
-Métricas de Acompanhamento
-Equipe:
+## Métricas de Acompanhamento
 
+### Equipe
+- Lead Time  
+- Throughput  
+- Cycle Time  
+- SLA de incidentes
 
-Lead Time
+### Individuais
+- PRs revisadas  
+- Bugs por estágio  
+- Participação em deploys  
+- Proatividade em reuniões
 
+---
 
-Throughput (entregas semanais)
+## Estrutura de Time Ideal
 
-
-Cycle Time
-
-
-SLA de incidentes
-
-
-Individuais (não punitivas):
-
-
-Pull Requests revisadas
-
-
-Bugs encontrados por estágio
-
-
-Participação em deploys e incidentes
-
-
-Proatividade em reuniões técnicas
+| Cargo             | Skills principais                                      |
+|------------------|--------------------------------------------------------|
+| Eng. Backend      | Go, testes, REST/gRPC, performance                     |
+| Eng. DevOps / SRE | Terraform, Docker, Kubernetes, CI/CD, observabilidade |
+| Eng. Front/API    | API Gateway, OAuth2, JWT, segurança                    |
+| Eng. QA           | Testes automatizados, carga, observabilidade           |
+| Eng. Integrador   | Kafka, sistemas legados, tolerância a falhas           |
+| Tech Lead         | Arquitetura, revisão, liderança técnica                |
