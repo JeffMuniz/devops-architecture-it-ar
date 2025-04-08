@@ -1,0 +1,15 @@
+# Binários
+*.exe
+*.out
+*.o
+app
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# IDEs / configs
+.idea/
+.vscode/
+*.log

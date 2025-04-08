@@ -1,2 +1,11 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Força LF como terminador de linha padrão
+* text=auto eol=lf
+
+# Linguagens
+*.tf linguist-language=HCL
+*.yml linguist-language=YAML
+*.go linguist-language=Go
+*.drawio linguist-language=XML
+
+# Markdown
+*.md text

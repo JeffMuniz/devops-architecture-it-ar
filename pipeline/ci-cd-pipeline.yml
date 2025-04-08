@@ -1,0 +1,32 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build binary
+        run: go build -o app ./cmd/main.go
+
+      - name: Docker Build
+        run: docker build -t corebanking-service:latest .
+
+      - name: Push to Registry
+        run: echo "docker push logic aqui"
+
+      - name: Deploy to Staging (via kubectl)
+        run: echo "kubectl apply -f k8s/deployment.yaml"
