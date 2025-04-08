@@ -1,7 +1,7 @@
 
 # DevOps Architecture – Challenge REF: IT-AR
 
-![DevOps Architecture Diagram](devops-architecture-diagram.png)
+![DevOps Architecture Diagram](/docs/diagrama.png)
 
 ## Descrição
 
